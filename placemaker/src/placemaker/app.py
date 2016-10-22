@@ -4,7 +4,7 @@ from flask.ext.api import FlaskAPI
 app = FlaskAPI(__name__)
 from flask import abort, render_template,request, jsonify
 from flask.ext.api import status
-from  models import CoC, Organization, Person, User
+from  models import CoC, Organization, Person, User, Form, Question
 import json
 import pickle
 import pytz
@@ -181,10 +181,10 @@ def delete_person(_id):
 @app.route('/api/user/create', methods=['POST'])
 def create_user():
     '''
-    Create a Person
+    Create a User
     '''
     try:
-        user = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
         user.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -196,7 +196,7 @@ def read_user(_id):
     Get a user
     '''
     try:
-        user = Person(_id=_id)
+        user = User(_id=_id)
         return user.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
@@ -207,7 +207,7 @@ def update_user(_id):
     Update a user
     '''
     try:
-        user = Person(_id=_id, **request.form)
+        user = User(_id=_id, **request.form)
         user.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -220,8 +220,106 @@ def delete_user(_id):
     Delete a user
     '''
     try:
-        user = Person(_id=_id)
+        user = User(_id=_id)
         user.delete()
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+#FORM
+@app.route('/api/form/create', methods=['POST'])
+def create_form():
+    '''
+    Create a Form
+    '''
+    try:
+        form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        form.save(upsert=True)
+        return status.HTTP_201_CREATED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/form/read/<_id>', methods=['GET'])
+def read_form(_id):
+    '''
+    Get a form
+    '''
+    try:
+        form = Form(_id=_id)
+        return form.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/form/update/<_id>', methods=['POST'])
+def update_form(_id):
+    '''
+    Update a form
+    '''
+    try:
+        form = Form(_id=_id, **request.form)
+        form.save(upsert=True)
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/api/form/delete/<_id>', methods=['GET', 'POST'])
+def delete_form(_id):
+    '''
+    Delete a form
+    '''
+    try:
+        form = Form(_id=_id)
+        form.delete()
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+#Question
+@app.route('/api/question/create', methods=['POST'])
+def create_question():
+    '''
+    Create a Question
+    '''
+    try:
+        question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        question.save(upsert=True)
+        return status.HTTP_201_CREATED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/question/read/<_id>', methods=['GET'])
+def read_question(_id):
+    '''
+    Get a question
+    '''
+    try:
+        question = Question(_id=_id)
+        return question.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/question/update/<_id>', methods=['POST'])
+def update_question(_id):
+    '''
+    Update a question
+    '''
+    try:
+        question = Question(_id=_id, **request.form)
+        question.save(upsert=True)
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/api/question/delete/<_id>', methods=['GET', 'POST'])
+def delete_question(_id):
+    '''
+    Delete a question
+    '''
+    try:
+        question = Question(_id=_id)
+        question.delete()
         return status.HTTP_202_ACCEPTED
     except:
         return status.HTTP_400_BAD_REQUEST
