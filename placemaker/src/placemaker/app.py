@@ -53,11 +53,11 @@ def read_coc(_id):
     Get a Coc
     '''
     try:
-        coc = Coc.objects.get(_id=_id)
+        coc = Coc.objects.get(pk=_id)
         print coc
         return coc.to_json()
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return str(e) #str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/all', methods=['GET'])
 def read_coc_all():
