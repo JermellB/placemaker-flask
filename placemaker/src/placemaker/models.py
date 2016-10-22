@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class CoC(mongoengine.DynamicDocument):
-	coc_id = mongoengine.UUIDField()
+	coc_id = mongoengine.UUIDField(primary_key=True)
 
 
 class Organization(mongoengine.DynamicDocument):
@@ -27,9 +27,9 @@ class NameInfo(mongoengine.DynamicEmbeddedDocument):
 	last_name = mongoengine.StringField()
 	suffix = mongoengine.StringField()
 	name_tuples = ("Full name reported",
-								"Partial, street name, or code name reported",
-								"Client doesn\'t know",
-								"Client refused")
+				   "Partial, street name, or code name reported",
+				   "Client doesn\'t know",
+				   "Client refused")
 	name_type = mongoengine.StringField(required=True, choices=name_tuples)
 
 
@@ -37,12 +37,11 @@ class SSNInfo(mongoengine.DynamicEmbeddedDocument):
 	"""
 	Embedded Document under Person used to store social security number information
 	"""
-	# TODO: create unique_with index for ssn that only needs to be unique if ssn_data_quality is set to "Full SSN reported"
-	ssn = mongoengine.StringField(max_length=9, unique=True)
+	ssn = mongoengine.StringField(max_length=9)
 	ssn_tuples = ("Full SSN reported",
-								"Approximate or partial SSN reported",
-								"Client doesn\'t know",
-								"Client refused")
+				  "Approximate or partial SSN reported",
+				  "Client doesn\'t know",
+				  "Client refused")
 	ssn_type = mongoengine.StringField(required=True, choices=ssn_tuples)
 
 
@@ -137,22 +136,21 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 
 
 	current_length_of_stay_tuples = ("One night or less",
-					  "Two to six nights",
-					  "One week or more, but less than one month",
-					  "One month or more, but less than 90 days",
-					  "90 days or more, but less than one year",
-					  "One year or longer",
-					  "Client doesn\'t know",
-					  "Client refused")
+									 "Two to six nights",
+									 "One week or more, but less than one month",
+									 "One month or more, but less than 90 days",
+									 "90 days or more, but less than one year",
+									 "One year or longer",
+									 "Client doesn\'t know",
+									 "Client refused")
 	current_length_of_stay = mongoengine.StringField(required=True, choices=current_length_of_stay_tuples)
 	current_approx_start_date = mongoengine.DateTimeField(required=True)
 	total_count_tuples = ("One Time",
-								   "Two times",
-								   "Three times",
-								   "Four or more times",
-								   "Client doesn\'t know",
-								   "Client refused"
-								   )
+						  "Two times",
+						  "Three times",
+						  "Four or more times",
+						  "Client doesn\'t know",
+						  "Client refused")
 	total_count = mongoengine.StringField(required=True, choices=total_count_tuples)
 	total_months = mongoengine.IntField(required=True)
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
@@ -258,21 +256,21 @@ class Person(mongoengine.DynamicDocument):
 	destination_info = mongoengine.EmbeddedDocumentField(DestinationInfo, required=True)
 
 	# Personal ID - HIMS UDE Standard (3.13)
-	personal_id = mongoengine.UUIDField()
+	personal_id = mongoengine.UUIDField(primary_key=True)
 
 	# Household ID - HIMS UDE Standard (3.14)
 	# Household isn't expressed in the Person schema, rather, Households are their own collection of embedded persons
 
 	# relationship between person and the head of their household
 	household_head_relationship_tuples = ("Self (head of household)",
-											   "Head of household\'s child",
-											   "Head of household\'s spouse or partner",
-											   "Head of household\'s other relation member (other relation to head of household)",
-											   "Other: non-relation member")
+										  "Head of household\'s child",
+										  "Head of household\'s spouse or partner",
+										  "Head of household\'s other relation member (other relation to head of household)",
+										  "Other: non-relation member")
 	household_head_relationship = mongoengine.StringField(required=True, choices=household_head_relationship_tuples)
 
 	# Client Location
-	coc_id = mongoengine.ReferenceField(CoC)
+	coc = mongoengine.ReferenceField(CoC)
 
 
 class Household(mongoengine.DynamicEmbeddedDocument):
@@ -280,8 +278,8 @@ class Household(mongoengine.DynamicEmbeddedDocument):
 	The Household class is built to fulfill the Household IDs HIMS UDE Standard (3.14)
 	This schema is used by a separate Households collection that has documents with embedded document lists containing all the persons in a household
 	"""
-	household_id = mongoengine.UUIDField()
-	members = mongoengine.EmbeddedDocumentListField(mongoengine.ReferenceField(Person))
+	household_id = mongoengine.UUIDField(primary_key=True)
+	members = mongoengine.EmbeddedDocumentListField(Person)
 
 
 class Users(mongoengine.DynamicDocument):
