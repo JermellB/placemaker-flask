@@ -1,13 +1,11 @@
 __author__ = 'jermellbeane'
 from flask import Flask
-from flask.ext.api import FlaskAPI
+from flask_api import FlaskAPI, status
 app = FlaskAPI(__name__)
-from flask import abort, render_template,request, jsonify
-from flask.ext.api import status
+from flask import request
 from  models import CoC, Organization, Person, User, Form, Question
-import json
-import pickle
 import pytz
+import json
 import datetime
 import mongoengine
 from settings import MONGO_HOST, MONGO_DB
@@ -32,6 +30,10 @@ class Person(mongoengine.DynamicDocument):
 class Users(mongoengine.DynamicDocument):
     pass
 '''
+
+@app.route('/')
+def api_root():
+    return 'HELLO'
 #COCS
 @app.route('/api/coc/create', methods=['POST'])
 def create_coc():
@@ -39,7 +41,7 @@ def create_coc():
     Create a Continuum of Care
     '''
     try:
-        coc = CoC(date_created=pytz.utc.localize(datetime.datetime.now()),**request.form)
+        coc = CoC(date_created=pytz.utc.localize(datetime.datetime.now()),**json.loads(request.form))
         coc.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -62,7 +64,7 @@ def update_coc(_id):
     Update a CoC
     '''
     try:
-        coc = CoC(_id=_id, **request.form)
+        coc = CoC(_id=_id, **json.loads(request.form))
         coc.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -88,7 +90,7 @@ def create_organization():
     Create an Organization
     '''
     try:
-        organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         organization.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -111,7 +113,7 @@ def update_organization(_id):
     Update a organization
     '''
     try:
-        organization = Organization(_id=_id, **request.form)
+        organization = Organization(_id=_id, **json.loads(request.form))
         organization.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -136,7 +138,7 @@ def create_person():
     Create a Person
     '''
     try:
-        person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         person.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -159,7 +161,7 @@ def update_person(_id):
     Update a person
     '''
     try:
-        person = Person(_id=_id, **request.form)
+        person = Person(_id=_id, **json.loads(request.form))
         person.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -184,7 +186,7 @@ def create_user():
     Create a User
     '''
     try:
-        user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         user.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -207,7 +209,7 @@ def update_user(_id):
     Update a user
     '''
     try:
-        user = User(_id=_id, **request.form)
+        user = User(_id=_id, **json.loads(request.form))
         user.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -233,7 +235,7 @@ def create_form():
     Create a Form
     '''
     try:
-        form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         form.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -256,7 +258,7 @@ def update_form(_id):
     Update a form
     '''
     try:
-        form = Form(_id=_id, **request.form)
+        form = Form(_id=_id, **json.loads(request.form))
         form.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -282,7 +284,7 @@ def create_question():
     Create a Question
     '''
     try:
-        question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         question.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -305,7 +307,7 @@ def update_question(_id):
     Update a question
     '''
     try:
-        question = Question(_id=_id, **request.form)
+        question = Question(_id=_id, **json.loads(request.form))
         question.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -323,3 +325,6 @@ def delete_question(_id):
         return status.HTTP_202_ACCEPTED
     except:
         return status.HTTP_400_BAD_REQUEST
+
+if __name__ == '__main__':
+    app.run()
