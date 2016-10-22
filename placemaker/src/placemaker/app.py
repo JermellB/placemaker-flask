@@ -78,7 +78,7 @@ def update_coc():
     Update a Coc
     '''
     try:
-        coc = Coc.objects.get(_id=request.form['_id'])
+        coc = Coc.objects.get(pk=request.form['_id'])
         coc2 = Coc(_id=coc._id,**json.loads(request.form))
         coc2.save(upsert=True)
         return str(status.HTTP_202_ACCEPTED)
@@ -91,7 +91,7 @@ def delete_coc(_id):
     Delete a Coc
     '''
     try:
-        coc = Coc.objects.get(_id=_id)
+        coc = Coc.objects.get(pk=_id)
         coc.delete()
         return str(status.HTTP_202_ACCEPTED)
     except:
@@ -117,7 +117,7 @@ def read_organization(_id):
     Get a organization
     '''
     try:
-        organization = Organization.objects.get(_id=_id)
+        organization = Organization.objects.get(pk=_id)
         return organization.to_json()
     except:
         return str(status.HTTP_400_BAD_REQUEST)
@@ -152,7 +152,7 @@ def delete_organization(_id):
     Delete a organization
     '''
     try:
-        organization = Organization.objects.get(_id=_id)
+        organization = Organization.objects.get(pk=_id)
         organization.delete()
         return str(status.HTTP_202_ACCEPTED)
     except:
@@ -177,7 +177,7 @@ def read_person(_id):
     Get a person
     '''
     try:
-        person = Person.objects.get(_id=_id)
+        person = Person.objects.get(pk=_id)
         return person.to_json()
     except:
         return str(status.HTTP_400_BAD_REQUEST)
@@ -212,7 +212,7 @@ def delete_person(_id):
     Delete a person
     '''
     try:
-        person = Person.objects.get(_id=_id)
+        person = Person.objects.get(pk=_id)
         person.delete()
         return str(status.HTTP_202_ACCEPTED)
     except:
@@ -237,7 +237,7 @@ def read_user(_id):
     Get a user
     '''
     try:
-        user = User.objects.get(_id=_id)
+        user = User.objects.get(pk=_id)
         return user.to_json()
     except:
         return str(status.HTTP_400_BAD_REQUEST)
@@ -334,7 +334,7 @@ def delete_form(_id):
     Delete a form
     '''
     try:
-        form = Form.objects.get(_id=_id)
+        form = Form.objects.get(pk=_id)
         form.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -359,7 +359,7 @@ def read_question(_id):
     Get a question
     '''
     try:
-        question = Question.objects.get(_id=_id)
+        question = Question.objects.get(pk=_id)
         return question.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
@@ -396,7 +396,7 @@ def delete_question(_id):
     Delete a question
     '''
     try:
-        question = Question.objects.get(_id=_id)
+        question = Question.objects.get(pk=_id)
         question.delete()
         return status.HTTP_202_ACCEPTED
     except:
