@@ -1,5 +1,4 @@
 __author__ = 'jermellbeane'
-from flask import Flask
 from flask_api import FlaskAPI, status
 app = FlaskAPI(__name__)
 from flask import request
@@ -328,4 +327,4 @@ def delete_question(_id):
         return status.HTTP_400_BAD_REQUEST
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run()
