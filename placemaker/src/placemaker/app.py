@@ -43,9 +43,9 @@ def create_coc():
     try:
         coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**json.loads(request.form))
         coc.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/read/<_id>', methods=['GET'])
 def read_coc(_id):
@@ -81,9 +81,9 @@ def update_coc():
         coc = Coc.objects.get(_id=request.form['_id'])
         coc2 = Coc(_id=coc._id,**json.loads(request.form))
         coc2.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/delete/<_id>', methods=['GET'])
 def delete_coc(_id):
@@ -93,9 +93,9 @@ def delete_coc(_id):
     try:
         coc = Coc.objects.get(_id=_id)
         coc.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 
 #ORGANIZATIONS
@@ -107,9 +107,9 @@ def create_organization():
     try:
         organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         organization.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/read/<_id>', methods=['GET'])
 def read_organization(_id):
@@ -120,7 +120,7 @@ def read_organization(_id):
         organization = Organization.objects.get(_id=_id)
         return organization.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/all', methods=['GET'])
 def read_all_orgs():
@@ -132,7 +132,7 @@ def read_all_orgs():
         orgs = Organization.objects
         return orgs.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/update', methods=['POST'])
 def update_organization():
@@ -142,9 +142,9 @@ def update_organization():
     try:
         organization = Organization(**json.loads(request.form))
         organization.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/delete/<_id>', methods=['GET'])
 def delete_organization(_id):
@@ -154,9 +154,9 @@ def delete_organization(_id):
     try:
         organization = Organization.objects.get(_id=_id)
         organization.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 # PERSON
 @app.route('/api/person/create', methods=['POST'])
@@ -167,9 +167,9 @@ def create_person():
     try:
         person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         person.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/read/<_id>', methods=['GET'])
 def read_person(_id):
@@ -180,7 +180,7 @@ def read_person(_id):
         person = Person.objects.get(_id=_id)
         return person.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/all', methods=['GET'])
 def read_all_people():
@@ -192,7 +192,7 @@ def read_all_people():
         people = Person.objects
         return people.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/update', methods=['POST'])
 def update_person(_id):
@@ -202,9 +202,9 @@ def update_person(_id):
     try:
         person = Person(**json.loads(request.form))
         person.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/delete/<_id>', methods=['GET'])
 def delete_person(_id):
@@ -214,9 +214,9 @@ def delete_person(_id):
     try:
         person = Person.objects.get(_id=_id)
         person.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 # USER
 @app.route('/api/user/create', methods=['POST'])
@@ -227,9 +227,9 @@ def create_user():
     try:
         user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         user.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/user/read/<_id>', methods=['GET'])
 def read_user(_id):
@@ -240,7 +240,7 @@ def read_user(_id):
         user = User.objects.get(_id=_id)
         return user.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/user/all', methods=['GET'])
 def read_all_users():
@@ -252,7 +252,7 @@ def read_all_users():
         user = User.objects
         return user.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
@@ -262,9 +262,9 @@ def update_user():
     try:
         user = User(**json.loads(request.form))
         user.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/user/delete/<_id>', methods=['GET'])
@@ -275,9 +275,9 @@ def delete_user(_id):
     try:
         user = User(_id=_id)
         user.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 #FORM
 @app.route('/api/form/create', methods=['POST'])
@@ -288,9 +288,9 @@ def create_form():
     try:
         form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         form.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/form/read/<_id>', methods=['GET'])
 def read_form(_id):
@@ -301,7 +301,7 @@ def read_form(_id):
         form = Form(_id=_id)
         return form.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/form/all', methods=['GET'])
 def read_all_forms():
@@ -313,7 +313,7 @@ def read_all_forms():
         forms = Form.objects
         return forms.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/form/update', methods=['POST'])
 def update_form():
@@ -323,9 +323,9 @@ def update_form():
     try:
         form = Form(**json.loads(request.form))
         form.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/form/delete/<_id>', methods=['GET'])
@@ -404,5 +404,5 @@ def delete_question(_id):
 
 if __name__ == '__main__':
     app.run()
-    question = Coc(rah_rah='1')
-    question.save()
+    # question = Coc(rah_rah='1')
+    # question.save()
