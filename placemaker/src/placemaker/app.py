@@ -34,6 +34,7 @@ class Users(mongoengine.DynamicDocument):
 @app.route('/')
 def api_root():
     return 'HELLO'
+
 #COCS
 @app.route('/api/coc/create', methods=['POST'])
 def create_coc():
@@ -70,7 +71,7 @@ def update_coc(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/coc/delete/<_id>', methods=['POST'])
+@app.route('/api/coc/delete/<_id>', methods=['GET'])
 def delete_coc(_id):
     '''
     Delete a CoC
@@ -119,7 +120,7 @@ def update_organization(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/organization/delete/<_id>', methods=['GET','POST'])
+@app.route('/api/organization/delete/<_id>', methods=['GET'])
 def delete_organization(_id):
     '''
     Delete a organization
@@ -167,7 +168,7 @@ def update_person(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/person/delete/<_id>', methods=['GET', 'POST'])
+@app.route('/api/person/delete/<_id>', methods=['GET'])
 def delete_person(_id):
     '''
     Delete a person
@@ -216,7 +217,7 @@ def update_user(_id):
         return status.HTTP_400_BAD_REQUEST
 
 
-@app.route('/api/user/delete/<_id>', methods=['GET', 'POST'])
+@app.route('/api/user/delete/<_id>', methods=['GET'])
 def delete_user(_id):
     '''
     Delete a user
@@ -265,7 +266,7 @@ def update_form(_id):
         return status.HTTP_400_BAD_REQUEST
 
 
-@app.route('/api/form/delete/<_id>', methods=['GET', 'POST'])
+@app.route('/api/form/delete/<_id>', methods=['GET'])
 def delete_form(_id):
     '''
     Delete a form
@@ -314,7 +315,7 @@ def update_question(_id):
         return status.HTTP_400_BAD_REQUEST
 
 
-@app.route('/api/question/delete/<_id>', methods=['GET', 'POST'])
+@app.route('/api/question/delete/<_id>', methods=['GET'])
 def delete_question(_id):
     '''
     Delete a question
@@ -327,4 +328,4 @@ def delete_question(_id):
         return status.HTTP_400_BAD_REQUEST
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
