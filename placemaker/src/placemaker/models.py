@@ -15,5 +15,5 @@ class Question(mongoengine.DynamicDocument):
 class Person(mongoengine.DynamicDocument):
     pass
 
-class Users(mongoengine.DynamicDocument):
+class User(mongoengine.DynamicDocument):
     pass

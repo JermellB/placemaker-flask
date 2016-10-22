@@ -4,7 +4,7 @@ from flask.ext.api import FlaskAPI
 app = FlaskAPI(__name__)
 from flask import abort, render_template,request, jsonify
 from flask.ext.api import status
-from  models import CoC, Organization, Person
+from  models import CoC, Organization, Person, User
 import json
 import pickle
 import pytz
@@ -177,3 +177,51 @@ def delete_person(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
+# USER
+@app.route('/api/user/create', methods=['POST'])
+def create_user():
+    '''
+    Create a Person
+    '''
+    try:
+        user = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+        user.save(upsert=True)
+        return status.HTTP_201_CREATED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/user/read/<_id>', methods=['GET'])
+def read_user(_id):
+    '''
+    Get a user
+    '''
+    try:
+        user = Person(_id=_id)
+        return user.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/user/update/<_id>', methods=['POST'])
+def update_user(_id):
+    '''
+    Update a user
+    '''
+    try:
+        user = Person(_id=_id, **request.form)
+        user.save(upsert=True)
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/api/user/delete/<_id>', methods=['GET', 'POST'])
+def delete_user(_id):
+    '''
+    Delete a user
+    '''
+    try:
+        user = Person(_id=_id)
+        user.delete()
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
