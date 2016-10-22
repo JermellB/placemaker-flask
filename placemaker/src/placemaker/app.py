@@ -53,19 +53,32 @@ def read_coc(_id):
     Get a CoC
     '''
     try:
-        coc = CoC(_id=_id)
-        return coc.to_json()
+        coc = CoC.objects.get(_id=_id)
+        print coc
+        return str(coc.to_json())
+    except:
+        return str(status.HTTP_400_BAD_REQUEST)
+
+@app.route('/api/coc/all', methods=['GET'])
+def read_coc_all():
+    '''
+    Get a CoC
+    '''
+    try:
+        cocs = CoC.objects
+        return cocs.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/coc/update/<_id>', methods=['POST'])
-def update_coc(_id):
+@app.route('/api/coc/update/', methods=['POST'])
+def update_coc():
     '''
     Update a CoC
     '''
     try:
-        coc = CoC(_id=_id, **json.loads(request.form))
-        coc.save(upsert=True)
+        coc = CoC.objects.get(_id=request.form['_id'])
+        coc2 = CoC(_id=coc._id,**json.loads(request.form))
+        coc2.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
         return status.HTTP_400_BAD_REQUEST
@@ -76,7 +89,7 @@ def delete_coc(_id):
     Delete a CoC
     '''
     try:
-        coc = CoC(_id=_id)
+        coc = CoC.objects.get(_id=_id)
         coc.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -102,18 +115,30 @@ def read_organization(_id):
     Get a organization
     '''
     try:
-        organization = Organization(_id=_id)
+        organization = Organization.objects.get(_id=_id)
         return organization.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/organization/update/<_id>', methods=['POST'])
-def update_organization(_id):
+@app.route('/api/organization/all', methods=['GET'])
+def read_all_orgs():
+    '''
+    get a list of orgs
+    '''
+
+    try:
+        orgs = Organization.objects
+        return orgs.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/organization/update', methods=['POST'])
+def update_organization():
     '''
     Update a organization
     '''
     try:
-        organization = Organization(_id=_id, **json.loads(request.form))
+        organization = Organization(**json.loads(request.form))
         organization.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -125,7 +150,7 @@ def delete_organization(_id):
     Delete a organization
     '''
     try:
-        organization = Organization(_id=_id)
+        organization = Organization.objects.get(_id=_id)
         organization.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -150,18 +175,30 @@ def read_person(_id):
     Get a person
     '''
     try:
-        person = Person(_id=_id)
+        person = Person.objects.get(_id=_id)
         return person.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/person/update/<_id>', methods=['POST'])
+@app.route('/api/person/all', methods=['GET'])
+def read_all_people():
+    '''
+    get a list of all people
+    '''
+
+    try:
+        people = Person.objects
+        return people.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/person/update', methods=['POST'])
 def update_person(_id):
     '''
     Update a person
     '''
     try:
-        person = Person(_id=_id, **json.loads(request.form))
+        person = Person(**json.loads(request.form))
         person.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -173,7 +210,7 @@ def delete_person(_id):
     Delete a person
     '''
     try:
-        person = Person(_id=_id)
+        person = Person.objects.get(_id=_id)
         person.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -198,18 +235,30 @@ def read_user(_id):
     Get a user
     '''
     try:
-        user = User(_id=_id)
+        user = User.objects.get(_id=_id)
         return user.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/user/update/<_id>', methods=['POST'])
-def update_user(_id):
+@app.route('/api/user/all', methods=['GET'])
+def read_all_users():
+    '''
+    get a list of users
+    '''
+
+    try:
+        user = User.objects
+        return user.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/user/update', methods=['POST'])
+def update_user():
     '''
     Update a user
     '''
     try:
-        user = User(_id=_id, **json.loads(request.form))
+        user = User(**json.loads(request.form))
         user.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -252,13 +301,25 @@ def read_form(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/form/update/<_id>', methods=['POST'])
-def update_form(_id):
+@app.route('/api/form/all', methods=['GET'])
+def read_all_forms():
+    '''
+    get a list of forms
+    '''
+
+    try:
+        forms = Form.objects
+        return forms.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/form/update', methods=['POST'])
+def update_form():
     '''
     Update a form
     '''
     try:
-        form = Form(_id=_id, **json.loads(request.form))
+        form = Form(**json.loads(request.form))
         form.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -271,7 +332,7 @@ def delete_form(_id):
     Delete a form
     '''
     try:
-        form = Form(_id=_id)
+        form = Form.objects.get(_id=_id)
         form.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -296,18 +357,31 @@ def read_question(_id):
     Get a question
     '''
     try:
-        question = Question(_id=_id)
+        question = Question.objects.get(_id=_id)
         return question.to_json()
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/question/update/<_id>', methods=['POST'])
+@app.route('/api/question/all', methods=['GET'])
+def read_all_questions():
+    '''
+    get a list of questions
+    '''
+
+    try:
+        questions = Question.objects
+        return questions.to_json()
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/api/question/update', methods=['POST'])
 def update_question(_id):
     '''
     Update a question
     '''
     try:
-        question = Question(_id=_id, **json.loads(request.form))
+        question = Question(**json.loads(request.form))
         question.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -320,7 +394,7 @@ def delete_question(_id):
     Delete a question
     '''
     try:
-        question = Question(_id=_id)
+        question = Question.objects.get(_id=_id)
         question.delete()
         return status.HTTP_202_ACCEPTED
     except:
