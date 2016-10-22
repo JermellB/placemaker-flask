@@ -2,7 +2,7 @@ __author__ = 'jermellbeane'
 from flask_api import FlaskAPI, status
 app = FlaskAPI(__name__)
 from flask import request
-from  models import CoC, Organization, Person, User, Form, Question
+from  models import Coc, Organization, Person, User, Form, Question
 import pytz
 import json
 import datetime
@@ -11,7 +11,7 @@ from settings import MONGO_HOST, MONGO_DB
 mongoengine.connect(MONGO_DB, host=MONGO_HOST)
 
 '''
-class CoC(mongoengine.DynamicDocument):
+class Coc(mongoengine.DynamicDocument):
     pass
 
 class Organization(mongoengine.DynamicDocument):
@@ -34,14 +34,14 @@ class Users(mongoengine.DynamicDocument):
 def api_root():
     return 'HELLO'
 
-#COCS
+#CocS
 @app.route('/api/coc/create', methods=['POST'])
 def create_coc():
     '''
     Create a Continuum of Care
     '''
     try:
-        coc = CoC(date_created=pytz.utc.localize(datetime.datetime.now()),**json.loads(request.form))
+        coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**json.loads(request.form))
         coc.save(upsert=True)
         return status.HTTP_201_CREATED
     except:
@@ -50,34 +50,36 @@ def create_coc():
 @app.route('/api/coc/read/<_id>', methods=['GET'])
 def read_coc(_id):
     '''
-    Get a CoC
+    Get a Coc
     '''
     try:
-        coc = CoC.objects.get(_id=_id)
+        coc = Coc.objects.get(_id=_id)
         print coc
-        return str(coc.to_json())
+        return coc.to_json()
     except:
         return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/all', methods=['GET'])
 def read_coc_all():
     '''
-    Get a CoC
+    Get a Coc
     '''
     try:
-        cocs = CoC.objects
+        cocs = Coc.objects
+        print cocs
         return cocs.to_json()
-    except:
-        return status.HTTP_400_BAD_REQUEST
+    except Exception as e:
+        print str(e)
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/update/', methods=['POST'])
 def update_coc():
     '''
-    Update a CoC
+    Update a Coc
     '''
     try:
-        coc = CoC.objects.get(_id=request.form['_id'])
-        coc2 = CoC(_id=coc._id,**json.loads(request.form))
+        coc = Coc.objects.get(_id=request.form['_id'])
+        coc2 = Coc(_id=coc._id,**json.loads(request.form))
         coc2.save(upsert=True)
         return status.HTTP_202_ACCEPTED
     except:
@@ -86,10 +88,10 @@ def update_coc():
 @app.route('/api/coc/delete/<_id>', methods=['GET'])
 def delete_coc(_id):
     '''
-    Delete a CoC
+    Delete a Coc
     '''
     try:
-        coc = CoC.objects.get(_id=_id)
+        coc = Coc.objects.get(_id=_id)
         coc.delete()
         return status.HTTP_202_ACCEPTED
     except:
@@ -402,3 +404,5 @@ def delete_question(_id):
 
 if __name__ == '__main__':
     app.run()
+    question = Coc(rah_rah='1')
+    question.save()

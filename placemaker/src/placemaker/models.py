@@ -2,7 +2,7 @@ import mongoengine
 from datetime import datetime
 
 
-class CoC(mongoengine.DynamicDocument):
+class Coc(mongoengine.DynamicDocument):
 	coc_id = mongoengine.UUIDField()
 
 
@@ -272,7 +272,7 @@ class Person(mongoengine.DynamicDocument):
 	household_head_relationship = mongoengine.StringField(required=True, choices=household_head_relationship_tuples)
 
 	# Client Location
-	coc_id = mongoengine.ReferenceField(CoC)
+	coc_id = mongoengine.ReferenceField(Coc)
 
 
 class Household(mongoengine.DynamicEmbeddedDocument):
@@ -281,8 +281,8 @@ class Household(mongoengine.DynamicEmbeddedDocument):
 	This schema is used by a separate Households collection that has documents with embedded document lists containing all the persons in a household
 	"""
 	household_id = mongoengine.UUIDField()
-	members = mongoengine.EmbeddedDocumentListField(mongoengine.ReferenceField(Person))
+	members = mongoengine.ListField(Person)
 
 
-class Users(mongoengine.DynamicDocument):
+class User(mongoengine.DynamicDocument):
 	pass
