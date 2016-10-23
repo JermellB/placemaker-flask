@@ -60,16 +60,16 @@ class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
 
 class Organization(mongoengine.DynamicDocument):
 	name = mongoengine.StringField()
-	organization_type_tuples = ("Emergency Shelters",
+	organization_type_tuples = ("Emergency Shelter",
 								"Transitional Housing",
 								"Permanent Supportive Housing",
-								"Youth Programs",
+								"Youth Program",
 								"VA System",
-								"Winter Only Shelters",
-								"Independent Programs",
+								"Winter Only Shelter",
+								"Independent Program",
 								"Rapid Rehousing",
 								"Domestic Violence",
-								"Non-Homeless System Services")
+								"Non-Homeless System Service")
 	organization_type = mongoengine.StringField(choices=organization_type_tuples)
 	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
 
