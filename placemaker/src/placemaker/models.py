@@ -64,7 +64,7 @@ class Organization(mongoengine.DynamicDocument):
 	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
 	capacity = mongoengine.IntField()
 	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
-	coc = mongoengine.ReferenceField(CoC)
+	coc = mongoengine.ReferenceField(Coc)
 
 
 class Form(mongoengine.DynamicDocument):

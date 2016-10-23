@@ -51,7 +51,7 @@ def create_coc():
     try:
         coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**request.form)
         coc.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
+        return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
     except Exception as e:
         return str(e), status.HTTP_400_BAD_REQUEST
 
@@ -116,7 +116,7 @@ def create_organization():
         try:
             organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
             organization.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except Exception as e:
             return str(e), status.HTTP_400_BAD_REQUEST
 
@@ -124,7 +124,7 @@ def create_organization():
         try:
             organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
             organization.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except Exception as e:
             return str(e), status.HTTP_400_BAD_REQUEST
 
@@ -203,7 +203,7 @@ def create_person():
         try:
             person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
             person.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -211,7 +211,7 @@ def create_person():
         try:
             person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
             person.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -287,7 +287,7 @@ def create_user():
         try:
             user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
             user.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -295,7 +295,7 @@ def create_user():
         try:
             user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
             user.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -374,7 +374,7 @@ def create_form():
         try:
             form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
             form.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -382,7 +382,7 @@ def create_form():
         try:
             form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
             form.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -458,7 +458,7 @@ def create_question():
         try:
             question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
             question.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
@@ -466,7 +466,7 @@ def create_question():
         try:
             question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
             question.save(upsert=True)
-            return str(status.HTTP_201_CREATED)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
             return str(status.HTTP_400_BAD_REQUEST)
 
