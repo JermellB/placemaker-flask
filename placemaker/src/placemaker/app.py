@@ -48,12 +48,24 @@ def create_coc():
     '''
     Create a Continuum of Care
     '''
-    try:
-        coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**request.form)
-        coc.save(upsert=True)
-        return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
-    except Exception as e:
-        return str(e), status.HTTP_400_BAD_REQUEST
+    if request.form:
+
+        try:
+            coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**request.form)
+            coc.save(upsert=True)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
+        except Exception as e:
+            return str(e), status.HTTP_400_BAD_REQUEST
+
+    if request.json:
+        try:
+            coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            coc.save(upsert=True)
+            return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED), status.is_success(
+                status.HTTP_201_CREATED)
+        except Exception as e:
+            return str(e), status.HTTP_400_BAD_REQUEST
+
 
 @app.route('/api/coc/read/<_id>', methods=['GET'])
 def read_coc(_id):
@@ -65,7 +77,7 @@ def read_coc(_id):
         print coc
         return coc.to_json()
     except Exception as e:
-        return str(e) #str(status.HTTP_400_BAD_REQUEST)
+        return str(e) #str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/all', methods=['GET'])
 def read_coc_all():
@@ -78,20 +90,29 @@ def read_coc_all():
         return cocs.to_json()
     except Exception as e:
         print str(e)
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/update/', methods=['POST'])
 def update_coc():
     '''
     Update a Coc
     '''
-    try:
-        coc = Coc.objects.get(pk=request.form['_id'])
-        coc2 = Coc(_id=coc._id,**request.form)
-        coc2.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            coc = Coc.objects.get(pk=request.form['_id'])
+            coc2 = Coc(_id=coc._id,**request.form)
+            coc2.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            coc2 = Coc(**json.loads(request.json))
+            coc2.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/coc/delete/<_id>', methods=['GET'])
 def delete_coc(_id):
@@ -101,9 +122,9 @@ def delete_coc(_id):
     try:
         coc = Coc.objects.get(pk=_id)
         coc.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 
 #ORGANIZATIONS
@@ -142,7 +163,7 @@ def read_organization(_id):
         organization = Organization.objects.get(pk=_id)
         return organization.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/all', methods=['GET'])
 def read_all_orgs():
@@ -154,7 +175,7 @@ def read_all_orgs():
         orgs = Organization.objects
         return orgs.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/organization/update', methods=['POST'])
 def update_organization():
@@ -165,17 +186,17 @@ def update_organization():
         try:
             organization = Organization(**request.form)
             organization.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             organization = Organization(**json.loads(request.json))
             organization.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return 'Please use JSON or a FORM'
@@ -189,9 +210,9 @@ def delete_organization(_id):
     try:
         organization = Organization.objects.get(pk=_id)
         organization.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 # PERSON
 @app.route('/api/person/create', methods=['POST'])
@@ -205,7 +226,7 @@ def create_person():
             person.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
@@ -213,7 +234,7 @@ def create_person():
             person.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return 'Please use JSON or a FORM'
@@ -228,7 +249,7 @@ def read_person(_id):
         person = Person.objects.get(pk=_id)
         return person.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/all', methods=['GET'])
 def read_all_people():
@@ -240,7 +261,7 @@ def read_all_people():
         people = Person.objects
         return people.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/person/update', methods=['POST'])
 def update_person(_id):
@@ -251,17 +272,17 @@ def update_person(_id):
         try:
             person = Person(**request.form)
             person.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             person = Person(**json.loads(request.json))
             person.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
     else:
         return 'Please use JSON or a FORM'
 
@@ -273,9 +294,9 @@ def delete_person(_id):
     try:
         person = Person.objects.get(pk=_id)
         person.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 # USER
 @app.route('/api/user/create', methods=['POST'])
@@ -289,7 +310,7 @@ def create_user():
             user.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
@@ -297,7 +318,7 @@ def create_user():
             user.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return 'Please use JSON or a FORM'
@@ -312,7 +333,7 @@ def read_user(_id):
         user = User.objects.get(pk=_id)
         return user.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/user/all', methods=['GET'])
 def read_all_users():
@@ -324,7 +345,7 @@ def read_all_users():
         user = User.objects
         return user.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
@@ -335,17 +356,17 @@ def update_user():
         try:
             user = User(**request.form)
             user.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             user = User(**json.loads(request.json))
             user.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -360,9 +381,9 @@ def delete_user(_id):
     try:
         user = User(_id=_id)
         user.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 #FORM
 @app.route('/api/form/create', methods=['POST'])
@@ -376,7 +397,7 @@ def create_form():
             form.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
@@ -384,7 +405,7 @@ def create_form():
             form.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -398,7 +419,7 @@ def read_form(_id):
         form = Form.objects.get(pk=_id)
         return form.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/form/all', methods=['GET'])
 def read_all_forms():
@@ -410,7 +431,7 @@ def read_all_forms():
         forms = Form.objects
         return forms.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/form/update', methods=['POST'])
 def update_form():
@@ -421,17 +442,17 @@ def update_form():
         try:
             form = Form(**request.form)
             form.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             form = Form(**json.loads(request.form))
             form.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -444,9 +465,9 @@ def delete_form(_id):
     try:
         form = Form.objects.get(pk=_id)
         form.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 #Question
 @app.route('/api/question/create', methods=['POST'])
@@ -460,7 +481,7 @@ def create_question():
             question.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
@@ -468,7 +489,7 @@ def create_question():
             question.save(upsert=True)
             return str(status.HTTP_201_CREATED), status.is_success(status.HTTP_201_CREATED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -482,7 +503,7 @@ def read_question(_id):
         question = Question.objects.get(pk=_id)
         return question.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/question/all', methods=['GET'])
 def read_all_questions():
@@ -494,7 +515,7 @@ def read_all_questions():
         questions = Question.objects
         return questions.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/question/update', methods=['POST'])
@@ -506,17 +527,17 @@ def update_question(_id):
         try:
             question = Question(**request.form)
             question.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             question = Question(**json.loads(request.json))
             question.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -530,9 +551,9 @@ def delete_question(_id):
     try:
         question = Question.objects.get(pk=_id)
         question.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 #Logging
 @app.route('/api/log/read/<_id>', methods=['GET'])
@@ -544,7 +565,7 @@ def read_log(_id):
         log = Log.objects.get(pk=_id)
         return log.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/log/all', methods=['GET'])
 def read_all_logs():
@@ -556,7 +577,7 @@ def read_all_logs():
         logs = Log.objects
         return logs.to_json()
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/log/update', methods=['POST'])
@@ -568,17 +589,17 @@ def update_log(_id):
         try:
             log = Log(**request.form)
             log.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     elif request.json:
         try:
             log = Log(**json.loads(request.json))
             log.save(upsert=True)
-            return str(status.HTTP_202_ACCEPTED)
+            return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
         except:
-            return str(status.HTTP_400_BAD_REQUEST)
+            return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
     else:
         return "Please use JSON or a FORM"
@@ -591,9 +612,9 @@ def delete_log(_id):
     try:
         log = Log.objects.get(pk=_id)
         log.delete()
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except:
-        return str(status.HTTP_400_BAD_REQUEST)
+        return str(status.HTTP_400_BAD_REQUEST), status.is_client_error(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/message/<msg>/<name>/<number>', methods=['GET'])
 def send_messages(msg, name, number):
@@ -603,7 +624,7 @@ def send_messages(msg, name, number):
         # print("sending message to {}".format(key))
         m.client.send_message("hi {0} {1}".format(name, msg), number)
 
-        return str(status.HTTP_202_ACCEPTED)
+        return str(status.HTTP_202_ACCEPTED), status.is_success(status.HTTP_202_ACCEPTED)
     except Exception as e:
         return str(e)
 
