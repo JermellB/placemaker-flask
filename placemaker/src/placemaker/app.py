@@ -9,7 +9,7 @@ import datetime
 import mongoengine
 from settings import MONGO_HOST, MONGO_DB
 mongoengine.connect(MONGO_DB, host=MONGO_HOST)
-
+from messaging import TwilioNotificationsMiddleware
 '''
 class Coc(mongoengine.DynamicDocument):
     pass
@@ -398,6 +398,18 @@ def delete_question(_id):
     try:
         question = Question.objects.get(pk=_id)
         question.delete()
+        return status.HTTP_202_ACCEPTED
+    except:
+        return status.HTTP_400_BAD_REQUEST
+
+@app.route('/api/message', methods=['POST'])
+def send_messages():
+    try:
+        m = TwilioNotificationsMiddleware()
+        for key, value in json.loads(request.form):
+            print("sending message to {}".format(key))
+            m.client.send_message("hi {}".format(key), value)
+
         return status.HTTP_202_ACCEPTED
     except:
         return status.HTTP_400_BAD_REQUEST
