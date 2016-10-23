@@ -159,7 +159,23 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Client refused",
 						  "Data not collected")
 	total_count = mongoengine.StringField(choices=total_count_tuples)
-	total_months = mongoengine.IntField()
+	total_month_tuples = ("1 month",
+						  "2 months",
+						  "3 months",
+						  "4 months",
+						  "5 months",
+						  "6 months",
+						  "7 months",
+						  "8 months",
+						  "9 months",
+						  "10 months",
+						  "11 months",
+						  "12 months",
+						  "12+ months",
+						  "Client doesn\'t know",
+						  "Client refused",
+						  "Data not collected")
+	total_months = mongoengine.StringField(choices=total_month_tuples)
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
 	prior_residence_subtype = mongoengine.StringField(choices=residence_subtype_tuples)
 	prior_approx_start_date = mongoengine.DateTimeField()
@@ -199,7 +215,8 @@ class DestinationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Other - please specify",
 						  "No exit interview completed",
 						  "Client doesn\'t know",
-						  "Client refused")
+						  "Client refused",
+						  "Data not collected")
 	destination = mongoengine.StringField(choices=destination_tuples)
 	# destination_specify field is used for further specification only if gender field is set to "Other - please specify"
 	destination_specify = mongoengine.StringField()
@@ -269,9 +286,8 @@ class Person(mongoengine.DynamicDocument):
 	personal_id = mongoengine.UUIDField()
 	legacy_id = mongoengine.IntField()
 
-
 	# Household ID - HIMS UDE Standard (3.14)
-	# Household isn't expressed in the Person schema, rather, Households are their own collection of embedded persons
+	household_id = mongoengine.IntField()
 
 	# relationship between person and the head of their household
 	household_head_relationship_tuples = ("Self (head of household)",
