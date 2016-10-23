@@ -5,6 +5,7 @@ from datetime import datetime
 class Coc(mongoengine.DynamicDocument):
 	coc_id = mongoengine.UUIDField(primary_key=True)
 
+
 class Log(mongoengine.DynamicDocument):
 	first_name = mongoengine.StringField()
 	last_name = mongoengine.StringField()
@@ -19,15 +20,23 @@ class ContactInfo(mongoengine.DynamicEmbeddedDocument):
 	email = mongoengine.EmailField()
 	address = mongoengine.StringField()
 
-class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
-	gender_tuples = ("Male",
-					 "Female",
-					 "Transgender")
-	gender = mongoengine.StringField()
 
-	family_size = mongoengine.IntField()
+class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
+	individual_gender_tuples = ("Male",
+							"Female",
+							"No Individuals")
+	# this eligibility filter is applied to the head of the household or to an individual
+	individual_gender = mongoengine.StringField()
+
+	transgender = mongoengine.BooleanField()
+
+	family_size_min = mongoengine.IntField()
+	family_size_max = mongoengine.IntField()
 
 	veteran = mongoengine.BooleanField()
+	pregnancy = mongoengine.BooleanField()
+	sobriety = mongoengine.BooleanField()
+	hiv = mongoengine.BooleanField()
 
 	# TODO: eventually convert to list of specific referral organizations so we can fully realize our pipeline approach, keep as boolean right now
 	referral = mongoengine.BooleanField()
@@ -41,28 +50,28 @@ class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
 	# if expected_county doesn't have a value, refer to the address under ContactInfo for Jermell's google maps api functionality
 	expected_county = mongoengine.StringField()
 
-	max_age = mongoengine.IntField()
 	min_age = mongoengine.IntField()
-
-	pregnancy = mongoengine.BooleanField()
+	max_age = mongoengine.IntField()
 
 
 class Organization(mongoengine.DynamicDocument):
-	organization_type_tuples = ("Emergency Shelters",
-				   "Transitional Housing",
-				   "Permanent Supportive Housing",
-				   "Youth Programs",
-				   "VA System",
-				   "Winter Only Shelters",
-				   "Independent Programs",
-				   "Rapid Rehousing",
-				   "Domestic Violence",
-				   "Non-Homeless System Services")
-	organization_type = mongoengine.StringField(choices=organization_type_tuples)
 	name = mongoengine.StringField()
-
+	organization_type_tuples = ("Emergency Shelters",
+								"Transitional Housing",
+								"Permanent Supportive Housing",
+								"Youth Programs",
+								"VA System",
+								"Winter Only Shelters",
+								"Independent Programs",
+								"Rapid Rehousing",
+								"Domestic Violence",
+								"Non-Homeless System Services")
+	organization_type = mongoengine.StringField(choices=organization_type_tuples)
 	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
-	capacity = mongoengine.IntField()
+
+	# TODO: better capacity constraints that allocate amounts for specific types of persons, currently just two constraints for beds and families
+	bed_capacity = mongoengine.IntField()
+	family_capacity = mongoengine.IntField()
 	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
 	coc = mongoengine.ReferenceField(Coc)
 
@@ -130,7 +139,7 @@ class GenderInfo(mongoengine.DynamicEmbeddedDocument):
 					 "Client refused",
 					 "Data not collected")
 	gender = mongoengine.StringField(choices=gender_tuples)
-	# gender_specify field is used for further specification only if gender field is set to "Other - please specify"
+# gender_specify field is used for further specification only if gender field is set to "Other - please specify"
 
 
 class DisablingConditionInfo(mongoengine.DynamicEmbeddedDocument):
@@ -169,33 +178,33 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 							 "Data not collected")
 	residence_type = mongoengine.StringField(choices=residence_type_tuples)
 
-	residence_subtype_tuples = ("Place not meant for habitation (e.g. a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",
-								"Emergency shelter, including hotel or motel paid for with emergency",
-								"Safe Haven",
-								"Interim Housing",
-								"Foster care home or foster care group home",
-								"Hospital or other residential non-psychiatric medical facility",
-								"Jail, prison or juvenile detention facility",
-								"Long-term care facility or nursing home",
-								"Psychiatric hospital or other psychiatric facility",
-								"Substance abuse treatment facility or detox center",
-								"Hotel or motel paid for without emergency shelter voucher",
-						 		"Owned by client, no ongoing housing subsidy",
-						 		"Owned by client, with ongoing housing subsidy",
-						 		"Permanent housing for formerly homeless persons (such as: a CoC project; HUD legacy programs; or HOPWA PH)",
-							 	"Rental by client, no ongoing housing subsidy",
-							 	"Rental by client, with VASH subsidy",
-							 	"Rental by client, with GPD TIP subsidy",
-							 	"Rental by client, with other ongoing housing subsidy",
-							 	"Residential project or halfway house with no homeless criteria",
-							 	"Staying or living in a family member\'s room, apartment or house",
-							 	"Staying or living in a friend\'s room, apartment or house",
-							 	"Transitional housing for homeless persons (including homeless youth)",
-							 	"Client doesn\'t know",
-							 	"Client refused",
-								"Data not collected")
+	residence_subtype_tuples = (
+	"Place not meant for habitation (e.g. a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",
+	"Emergency shelter, including hotel or motel paid for with emergency",
+	"Safe Haven",
+	"Interim Housing",
+	"Foster care home or foster care group home",
+	"Hospital or other residential non-psychiatric medical facility",
+	"Jail, prison or juvenile detention facility",
+	"Long-term care facility or nursing home",
+	"Psychiatric hospital or other psychiatric facility",
+	"Substance abuse treatment facility or detox center",
+	"Hotel or motel paid for without emergency shelter voucher",
+	"Owned by client, no ongoing housing subsidy",
+	"Owned by client, with ongoing housing subsidy",
+	"Permanent housing for formerly homeless persons (such as: a CoC project; HUD legacy programs; or HOPWA PH)",
+	"Rental by client, no ongoing housing subsidy",
+	"Rental by client, with VASH subsidy",
+	"Rental by client, with GPD TIP subsidy",
+	"Rental by client, with other ongoing housing subsidy",
+	"Residential project or halfway house with no homeless criteria",
+	"Staying or living in a family member\'s room, apartment or house",
+	"Staying or living in a friend\'s room, apartment or house",
+	"Transitional housing for homeless persons (including homeless youth)",
+	"Client doesn\'t know",
+	"Client refused",
+	"Data not collected")
 	residence_subtype = mongoengine.StringField(choices=residence_subtype_tuples)
-
 
 	current_length_of_stay_tuples = ("One night or less",
 									 "Two to six nights",
@@ -237,6 +246,7 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 	prior_residence_subtype = mongoengine.StringField(choices=residence_subtype_tuples)
 	prior_approx_start_date = mongoengine.DateTimeField()
 
+
 class DestinationInfo(mongoengine.DynamicEmbeddedDocument):
 	"""
 	Embedded Document under Person used to store destination information
@@ -277,6 +287,7 @@ class DestinationInfo(mongoengine.DynamicEmbeddedDocument):
 	destination = mongoengine.StringField(choices=destination_tuples)
 	# destination_specify field is used for further specification only if gender field is set to "Other - please specify"
 	destination_specify = mongoengine.StringField()
+
 
 class Person(mongoengine.DynamicDocument):
 	"""
@@ -344,7 +355,7 @@ class Person(mongoengine.DynamicDocument):
 	legacy_id = mongoengine.IntField()
 
 	# Household ID - HIMS UDE Standard (3.14)
-	household_id = mongoengine.IntField()
+	family_id = mongoengine.IntField()
 
 	# relationship between person and the head of their household
 	household_head_relationship_tuples = ("Self (head of household)",
@@ -356,25 +367,6 @@ class Person(mongoengine.DynamicDocument):
 
 	# Client Location
 	coc_id = mongoengine.ReferenceField(Coc)
-
-
-# class Household(mongoengine.DynamicEmbeddedDocument):
-# 	"""
-# 	The Household class is built to fulfill the Household IDs HIMS UDE Standard (3.14)
-# 	This schema is used by a separate Households collection that has documents with embedded document lists containing all the persons in a household
-# 	"""
-# 	household_id = mongoengine.UUIDField()
-# 	members = mongoengine.ListField(Person)
-# 	coc = mongoengine.ReferenceField(Coc)
-
-
-# class Household(mongoengine.DynamicEmbeddedDocument):
-# 	"""
-# 	The Household class is built to fulfill the Household IDs HIMS UDE Standard (3.14)
-# 	This schema is used by a separate Households collection that has documents with embedded document lists containing all the persons in a household
-# 	"""
-# 	household_id = mongoengine.UUIDField(primary_key=True)
-# 	members = mongoengine.EmbeddedDocumentListField(Person)
 
 
 
