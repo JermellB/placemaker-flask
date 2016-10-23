@@ -38,7 +38,7 @@ class SSNInfo(mongoengine.DynamicEmbeddedDocument):
 	"""
 	Embedded Document under Person used to store social security number information
 	"""
-	ssn = mongoengine.StringField(max_length=9)
+	ssn = mongoengine.StringField(max_length=20)
 	ssn_tuples = ("Full SSN reported",
 				  "Approximate or partial SSN reported",
 				  "Client doesn\'t know",
@@ -156,7 +156,8 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Three times",
 						  "Four or more times",
 						  "Client doesn\'t know",
-						  "Client refused")
+						  "Client refused",
+						  "Data not collected")
 	total_count = mongoengine.StringField(choices=total_count_tuples)
 	total_months = mongoengine.IntField()
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
