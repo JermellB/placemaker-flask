@@ -628,6 +628,97 @@ def send_messages(msg, name, number):
     except Exception as e:
         return str(e)
 
+def read_eligible_people(organization):
+
+	"""
+	individual_gender
+	transgender
+	family_size_min
+	family_size_max
+	veteran
+	pregnancy
+	sobriety
+	hiv
+	referral
+	hour_open
+	hour_close
+	expected_county
+	min_age
+	max_age
+	"""
+	eligible_json = json.loads(organization.to_json())['eligibility_info']
+
+
+	people = [json.loads(person.to_json()) for person in Person.objects()]
+	indx_array = range(0, len(people))
+	for indx, person in enumerate(people):
+		family_count = ['dummy' if iter_person['family_id'] == person['family_id'] else '' for iter_person in people].count('dummy')
+
+		# individual gender and transgender eligibility
+		if eligible_json.get('individual_gender') is not None:
+			if eligible_json['individual_gender'] == "No Individuals" and family_count == 1:
+				del indx_array[indx]
+				continue
+			if person['gender_info']['gender'] != "Female" and person['gender_info']['gender'] != "Male" and eligible_json.get('transgender', False):
+				del indx_array[indx]
+				continue
+			if person['gender_info']['gender'] != eligible_json['individual_gender']:
+				del indx_array[indx]
+				continue
+
+		# family size min eligibility
+		if eligible_json.get('family_size_min') is not None:
+			if family_count < eligible_json['family_size_min']:
+				del indx_array[indx]
+				continue
+
+		# family size max eligibility
+		if eligible_json.get('family_size_max') is not None:
+			if family_count > eligible_json['family_size_max']:
+				del indx_array[indx]
+				continue
+
+		# veteran eligibility
+		if eligible_json.get('veteran') is not None:
+			if eligible_json['veteran'] and person['veteran'] != "Yes":
+				del indx_array[indx]
+				continue
+
+		# referral eligibility
+		if eligible_json.get('referral') is not None:
+
+		# hour open eligibility
+		if eligible_json.get('hour_open') is not None:
+			if float(datetime.datetime.now().hour + datetime.datetime.now().minute/60.0) < eligible_json['hour_open']:
+				del indx_array[indx]
+				continue
+
+		# hour close eligibility
+		if eligible_json.get('hour_close') is not None:
+			if float(datetime.datetime.now().hour + datetime.datetime.now().minute/60.0) > eligible_json['hour_close']:
+				del indx_array[indx]
+				continue
+
+		# min age eligibility
+		if eligible_json.get('min_age') is not None:
+			if person['dob_info'].get('dob') is None:
+				del indx_array[indx]
+				continue
+			if datetime.now().year - person['dob_info']['dob'].year < eligible_json['min_age']:
+				del indx_array[indx]
+				continue
+
+		# max age eligibility
+		if eligible_json.get('max_age') is not None:
+			if person['dob_info'].get('dob') is None:
+				del indx_array[indx]
+				continue
+			if datetime.now().year - person['dob_info']['dob'].year > eligible_json['max_age']:
+				del indx_array[indx]
+				continue
+
+
+
 if __name__ == '__main__':
     app.run()
     # app2 = app.test_client()
