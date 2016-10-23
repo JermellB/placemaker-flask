@@ -265,7 +265,8 @@ class Person(mongoengine.DynamicDocument):
 
 	# Personal ID - HIMS UDE Standard (3.13)
 	personal_id = mongoengine.UUIDField(primary_key=True)
-	legacy_id = mongoengine.IntField(primary_key=True)
+	legacy_id = mongoengine.IntField()
+
 
 	# Household ID - HIMS UDE Standard (3.14)
 	# Household isn't expressed in the Person schema, rather, Households are their own collection of embedded persons
