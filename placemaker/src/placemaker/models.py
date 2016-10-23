@@ -147,7 +147,8 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 									 "90 days or more, but less than one year",
 									 "One year or longer",
 									 "Client doesn\'t know",
-									 "Client refused")
+									 "Client refused",
+									 "Data not collected")
 	current_length_of_stay = mongoengine.StringField(choices=current_length_of_stay_tuples)
 	current_approx_start_date = mongoengine.DateTimeField()
 	total_count_tuples = ("One Time",
