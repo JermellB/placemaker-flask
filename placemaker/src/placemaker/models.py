@@ -38,7 +38,7 @@ class SSNInfo(mongoengine.DynamicEmbeddedDocument):
 	"""
 	Embedded Document under Person used to store social security number information
 	"""
-	ssn = mongoengine.StringField(max_length=9)
+	ssn = mongoengine.StringField(max_length=100)
 	ssn_tuples = ("Full SSN reported",
 				  "Approximate or partial SSN reported",
 				  "Client doesn\'t know",

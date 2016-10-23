@@ -344,9 +344,9 @@ def delete_form(_id):
     try:
         form = Form.objects.get(pk=_id)
         form.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 #Question
 @app.route('/api/question/create', methods=['POST'])
@@ -357,9 +357,9 @@ def create_question():
     try:
         question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
         question.save(upsert=True)
-        return status.HTTP_201_CREATED
+        return str(status.HTTP_201_CREATED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/question/read/<_id>', methods=['GET'])
 def read_question(_id):
@@ -370,7 +370,7 @@ def read_question(_id):
         question = Question.objects.get(pk=_id)
         return question.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/question/all', methods=['GET'])
 def read_all_questions():
@@ -382,7 +382,7 @@ def read_all_questions():
         questions = Question.objects
         return questions.to_json()
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/question/update', methods=['POST'])
@@ -393,9 +393,9 @@ def update_question(_id):
     try:
         question = Question(**json.loads(request.form))
         question.save(upsert=True)
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 
 @app.route('/api/question/delete/<_id>', methods=['GET'])
@@ -406,9 +406,9 @@ def delete_question(_id):
     try:
         question = Question.objects.get(pk=_id)
         question.delete()
-        return status.HTTP_202_ACCEPTED
+        return str(status.HTTP_202_ACCEPTED)
     except:
-        return status.HTTP_400_BAD_REQUEST
+        return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/message/<msg>/<name>/<number>', methods=['GET'])
 def send_messages(msg, name, number):
