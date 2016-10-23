@@ -4,6 +4,7 @@ from datetime import datetime
 
 class Coc(mongoengine.DynamicDocument):
 	coc_id = mongoengine.UUIDField(primary_key=True)
+	url = mongoengine.URLField()
 
 
 class Log(mongoengine.DynamicDocument):
@@ -16,9 +17,12 @@ class Log(mongoengine.DynamicDocument):
 
 class ContactInfo(mongoengine.DynamicEmbeddedDocument):
 	contact_name = mongoengine.StringField()
-	number = mongoengine.StringField()
+	phone_number = mongoengine.StringField()
 	email = mongoengine.EmailField()
 	address = mongoengine.StringField()
+	city = mongoengine.StringField()
+	state = mongoengine.StringField()
+	zip_code = mongoengine.IntField()
 
 
 class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
