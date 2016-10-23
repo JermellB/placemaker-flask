@@ -538,7 +538,7 @@ def delete_question(_id):
 @app.route('/api/log/read/<_id>', methods=['GET'])
 def read_log(_id):
     '''
-    Get a question
+    Get a log
     '''
     try:
         log = Log.objects.get(pk=_id)
@@ -549,7 +549,7 @@ def read_log(_id):
 @app.route('/api/log/all', methods=['GET'])
 def read_all_questions():
     '''
-    get a list of questions
+    get a list of all logs
     '''
 
     try:
@@ -562,7 +562,7 @@ def read_all_questions():
 @app.route('/api/log/update', methods=['POST'])
 def update_question(_id):
     '''
-    Update a question
+    Update a log
     '''
     if request.form:
         try:
@@ -586,7 +586,7 @@ def update_question(_id):
 @app.route('/api/log/delete/<_id>', methods=['GET'])
 def delete_question(_id):
     '''
-    Delete a question
+    Delete a log
     '''
     try:
         log = Log.objects.get(pk=_id)
