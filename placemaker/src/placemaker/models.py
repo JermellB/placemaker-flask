@@ -38,7 +38,7 @@ class SSNInfo(mongoengine.DynamicEmbeddedDocument):
 	"""
 	Embedded Document under Person used to store social security number information
 	"""
-	ssn = mongoengine.StringField(max_length=100)
+	ssn = mongoengine.StringField()
 	ssn_tuples = ("Full SSN reported",
 				  "Approximate or partial SSN reported",
 				  "Client doesn\'t know",
@@ -156,7 +156,8 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Three times",
 						  "Four or more times",
 						  "Client doesn\'t know",
-						  "Client refused")
+						  "Client refused",
+						  "Data not collected")
 	total_count = mongoengine.StringField(choices=total_count_tuples)
 	total_months = mongoengine.IntField()
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
@@ -265,7 +266,7 @@ class Person(mongoengine.DynamicDocument):
 	destination_info = mongoengine.EmbeddedDocumentField(DestinationInfo)
 
 	# Personal ID - HIMS UDE Standard (3.13)
-	personal_id = mongoengine.UUIDField(primary_key=True)
+	personal_id = mongoengine.UUIDField()
 	legacy_id = mongoengine.IntField()
 
 
