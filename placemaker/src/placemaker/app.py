@@ -628,24 +628,8 @@ def send_messages(msg, name, number):
     except Exception as e:
         return str(e)
 
-def read_eligible_people(organization):
 
-	"""
-	individual_gender
-	transgender
-	family_size_min
-	family_size_max
-	veteran
-	pregnancy
-	sobriety
-	hiv
-	referral
-	hour_open
-	hour_close
-	expected_county
-	min_age
-	max_age
-	"""
+def read_eligible_people(organization):
 	eligible_json = json.loads(organization.to_json())['eligibility_info']
 
 
@@ -716,7 +700,6 @@ def read_eligible_people(organization):
 			if datetime.now().year - person['dob_info']['dob'].year > eligible_json['max_age']:
 				del indx_array[indx]
 				continue
-
 
 
 if __name__ == '__main__':
