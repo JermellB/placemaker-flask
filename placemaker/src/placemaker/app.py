@@ -2,7 +2,7 @@ __author__ = 'jermellbeane'
 from flask_api import FlaskAPI, status
 from flask import Flask
 app = Flask(__name__)
-from flask import request
+from flask import request, make_response
 from  models import Coc, Organization, Person, User, Form, Question, Log
 import pytz
 import json
@@ -49,11 +49,11 @@ def create_coc():
     Create a Continuum of Care
     '''
     try:
-        coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**json.loads(request.form))
+        coc = Coc(date_created=pytz.utc.localize(datetime.datetime.now()),**request.form)
         coc.save(upsert=True)
         return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return str(e), status.HTTP_400_BAD_REQUEST
 
 @app.route('/api/coc/read/<_id>', methods=['GET'])
 def read_coc(_id):
@@ -74,7 +74,7 @@ def read_coc_all():
     '''
     try:
         cocs = Coc.objects
-        print cocs
+        # print cocs
         return cocs.to_json()
     except Exception as e:
         print str(e)
@@ -87,7 +87,7 @@ def update_coc():
     '''
     try:
         coc = Coc.objects.get(pk=request.form['_id'])
-        coc2 = Coc(_id=coc._id,**json.loads(request.form))
+        coc2 = Coc(_id=coc._id,**request.form)
         coc2.save(upsert=True)
         return str(status.HTTP_202_ACCEPTED)
     except:
@@ -112,12 +112,26 @@ def create_organization():
     '''
     Create an Organization
     '''
-    try:
-        organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
-        organization.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+            organization.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except Exception as e:
+            return str(e), status.HTTP_400_BAD_REQUEST
+
+    elif request.json:
+        try:
+            organization = Organization(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            organization.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except Exception as e:
+            return str(e), status.HTTP_400_BAD_REQUEST
+
+    else:
+        return 'Please use JSON or a FORM'
+
+
 
 @app.route('/api/organization/read/<_id>', methods=['GET'])
 def read_organization(_id):
@@ -147,12 +161,25 @@ def update_organization():
     '''
     Update a organization
     '''
-    try:
-        organization = Organization(**json.loads(request.form))
-        organization.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            organization = Organization(**request.form)
+            organization.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            organization = Organization(**json.loads(request.json))
+            organization.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return 'Please use JSON or a FORM'
+
 
 @app.route('/api/organization/delete/<_id>', methods=['GET'])
 def delete_organization(_id):
@@ -172,12 +199,25 @@ def create_person():
     '''
     Create a Person
     '''
-    try:
-        person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
-        person.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+            person.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            person = Person(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            person.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return 'Please use JSON or a FORM'
+
 
 @app.route('/api/person/read/<_id>', methods=['GET'])
 def read_person(_id):
@@ -207,12 +247,23 @@ def update_person(_id):
     '''
     Update a person
     '''
-    try:
-        person = Person(**json.loads(request.form))
-        person.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            person = Person(**request.form)
+            person.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            person = Person(**json.loads(request.json))
+            person.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+    else:
+        return 'Please use JSON or a FORM'
 
 @app.route('/api/person/delete/<_id>', methods=['GET'])
 def delete_person(_id):
@@ -232,12 +283,25 @@ def create_user():
     '''
     Create a User
     '''
-    try:
-        user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
-        user.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+            user.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            user = User(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            user.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return 'Please use JSON or a FORM'
+
 
 @app.route('/api/user/read/<_id>', methods=['GET'])
 def read_user(_id):
@@ -267,12 +331,25 @@ def update_user():
     '''
     Update a user
     '''
-    try:
-        user = User(**json.loads(request.form))
-        user.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            user = User(**request.form)
+            user.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            user = User(**json.loads(request.json))
+            user.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
+
 
 
 @app.route('/api/user/delete/<_id>', methods=['GET'])
@@ -293,12 +370,24 @@ def create_form():
     '''
     Create a Form
     '''
-    try:
-        form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
-        form.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+            form.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            form = Form(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            form.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
 
 @app.route('/api/form/read/<_id>', methods=['GET'])
 def read_form(_id):
@@ -328,13 +417,24 @@ def update_form():
     '''
     Update a form
     '''
-    try:
-        form = Form(**json.loads(request.form))
-        form.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            form = Form(**request.form)
+            form.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
 
+    elif request.json:
+        try:
+            form = Form(**json.loads(request.form))
+            form.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
 
 @app.route('/api/form/delete/<_id>', methods=['GET'])
 def delete_form(_id):
@@ -354,12 +454,24 @@ def create_question():
     '''
     Create a Question
     '''
-    try:
-        question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.form))
-        question.save(upsert=True)
-        return str(status.HTTP_201_CREATED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **request.form)
+            question.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            question = Question(date_created=pytz.utc.localize(datetime.datetime.now()), **json.loads(request.json))
+            question.save(upsert=True)
+            return str(status.HTTP_201_CREATED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
 
 @app.route('/api/question/read/<_id>', methods=['GET'])
 def read_question(_id):
@@ -390,12 +502,24 @@ def update_question(_id):
     '''
     Update a question
     '''
-    try:
-        question = Question(**json.loads(request.form))
-        question.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            question = Question(**request.form)
+            question.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    elif request.json:
+        try:
+            question = Question(**json.loads(request.json))
+            question.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
 
 
 @app.route('/api/question/delete/<_id>', methods=['GET'])
@@ -440,13 +564,24 @@ def update_question(_id):
     '''
     Update a question
     '''
-    try:
-        log = Log(**json.loads(request.form))
-        log.save(upsert=True)
-        return str(status.HTTP_202_ACCEPTED)
-    except:
-        return str(status.HTTP_400_BAD_REQUEST)
+    if request.form:
+        try:
+            log = Log(**request.form)
+            log.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
 
+    elif request.json:
+        try:
+            log = Log(**json.loads(request.json))
+            log.save(upsert=True)
+            return str(status.HTTP_202_ACCEPTED)
+        except:
+            return str(status.HTTP_400_BAD_REQUEST)
+
+    else:
+        return "Please use JSON or a FORM"
 
 @app.route('/api/log/delete/<_id>', methods=['GET'])
 def delete_question(_id):
@@ -459,7 +594,7 @@ def delete_question(_id):
         return str(status.HTTP_202_ACCEPTED)
     except:
         return str(status.HTTP_400_BAD_REQUEST)
-    
+
 @app.route('/api/message/<msg>/<name>/<number>', methods=['GET'])
 def send_messages(msg, name, number):
     try:
