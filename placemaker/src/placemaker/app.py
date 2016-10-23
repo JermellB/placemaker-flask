@@ -306,7 +306,7 @@ def read_form(_id):
     Get a form
     '''
     try:
-        form = Form(_id=_id)
+        form = Form.objects.get(pk=_id)
         return form.to_json()
     except:
         return str(status.HTTP_400_BAD_REQUEST)
