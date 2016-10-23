@@ -5,9 +5,66 @@ from datetime import datetime
 class CoC(mongoengine.DynamicDocument):
 	coc_id = mongoengine.UUIDField(primary_key=True)
 
+class Log(mongoengine.DynamicDocument):
+	first_name = mongoengine.StringField()
+	last_name = mongoengine.StringField()
+	ssn = mongoengine.StringField()
+	organization_name = mongoengine.StringField()
+	event_name = mongoengine.StringField()
+
+
+class ContactInfo(mongoengine.DynamicEmbeddedDocument):
+	contact_name = mongoengine.StringField()
+	number = mongoengine.StringField()
+	email = mongoengine.EmailField()
+	address = mongoengine.StringField()
+
+class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
+	gender_tuples = ("Male",
+					 "Female",
+					 "Transgender")
+	gender = mongoengine.StringField()
+
+	family_size = mongoengine.IntField()
+
+	veteran = mongoengine.BooleanField()
+
+	# TODO: eventually convert to list of specific referral organizations so we can fully realize our pipeline approach, keep as boolean right now
+	referral = mongoengine.BooleanField()
+
+	# populate hour_open and hour_close with agency service hours
+	hour_open = mongoengine.FloatField()
+	hour_close = mongoengine.FloatField()
+
+	# Specific address already under ContactInfo, simply use that for
+	# if latest person address is not in expected_county, don't allow them to go there
+	# if expected_county doesn't have a value, refer to the address under ContactInfo for Jermell's google maps api functionality
+	expected_county = mongoengine.StringField()
+
+	max_age = mongoengine.IntField()
+	min_age = mongoengine.IntField()
+
+	pregnancy = mongoengine.BooleanField()
+
 
 class Organization(mongoengine.DynamicDocument):
-	pass
+	organization_type_tuples = ("Emergency Shelters",
+				   "Transitional Housing",
+				   "Permanent Supportive Housing",
+				   "Youth Programs",
+				   "VA System",
+				   "Winter Only Shelters",
+				   "Independent Programs",
+				   "Rapid Rehousing",
+				   "Domestic Violence",
+				   "Non-Homeless System Services")
+	organization_type = mongoengine.StringField(choices=organization_type_tuples)
+	name = mongoengine.StringField()
+
+	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
+	capacity = mongoengine.IntField()
+	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
+	coc = mongoengine.ReferenceField(CoC)
 
 
 class Form(mongoengine.DynamicDocument):
