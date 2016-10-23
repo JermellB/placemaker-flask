@@ -217,7 +217,7 @@ class Person(mongoengine.DynamicDocument):
 	ssn_info = mongoengine.EmbeddedDocumentField(SSNInfo)
 
 	# Date of Birth - HIMS UDE standard (3.3)
-	dob_info = mongoengine.EmbeddedDocumentField(DOBInfo, required=True)
+	dob_info = mongoengine.EmbeddedDocumentField(DOBInfo)
 
 	# Race - HIMS UDE Standard (3.4)
 	race_tuples = ("American Indian or Alaska Native",
@@ -228,7 +228,7 @@ class Person(mongoengine.DynamicDocument):
 				   "Client doesn\'t know",
 				   "Client refused",
 				   "Data not collected")
-	race = mongoengine.StringField(required=True, choices=race_tuples)
+	race = mongoengine.StringField(choices=race_tuples)
 
 	# Ethnicity - HIMS UDE Standard (3.5)
 	ethnicity_tuples = ("Non-Hispanic/Non-Latino",
@@ -236,10 +236,10 @@ class Person(mongoengine.DynamicDocument):
 						"Client doesn\'t know",
 						"Client refused",
 						"Data not collected")
-	ethnicity = mongoengine.StringField(required=True, choices=ethnicity_tuples)
+	ethnicity = mongoengine.StringField(choices=ethnicity_tuples)
 
 	# Gender - HIMS UDE Standard (3.6)
-	gender_info = mongoengine.EmbeddedDocumentField(GenderInfo, required=True)
+	gender_info = mongoengine.EmbeddedDocumentField(GenderInfo)
 
 	# Veteran Status - HIMS UDE Standard (3.7)
 	veteran_status_tuples = ("No",
@@ -247,22 +247,22 @@ class Person(mongoengine.DynamicDocument):
 							 "Client doesn\'t know",
 							 "Client refused",
 							 "Data not collected")
-	veteran = mongoengine.StringField(required=True, choices=veteran_status_tuples)
+	veteran = mongoengine.StringField(choices=veteran_status_tuples)
 
 	# Disabling Condition - HIMS UDE Standard (3.7)
-	disabling_condition_info = mongoengine.EmbeddedDocumentField(DisablingConditionInfo, required=True)
+	disabling_condition_info = mongoengine.EmbeddedDocumentField(DisablingConditionInfo)
 
 	# Living Situation - HIMS UDE Standard (3.917A)
-	living_situation_info = mongoengine.EmbeddedDocumentField(LivingSituationInfo, required=True)
+	living_situation_info = mongoengine.EmbeddedDocumentField(LivingSituationInfo)
 
 	# Project Entry Date - HIMS UDE Standard (3.10)
-	project_entry_date = mongoengine.DateTimeField(required=True, default=datetime.now())
+	project_entry_date = mongoengine.DateTimeField(default=datetime.now())
 
 	# Project Exit Date - HIMS UDE Standard (3.11)
 	project_exit_date = mongoengine.DateTimeField()
 
 	# Destination - HIMS UDE Standard (3.12)
-	destination_info = mongoengine.EmbeddedDocumentField(DestinationInfo, required=True)
+	destination_info = mongoengine.EmbeddedDocumentField(DestinationInfo)
 
 	# Personal ID - HIMS UDE Standard (3.13)
 	personal_id = mongoengine.UUIDField(primary_key=True)
@@ -278,7 +278,7 @@ class Person(mongoengine.DynamicDocument):
 										  "Head of household\'s spouse or partner",
 										  "Head of household\'s other relation member (other relation to head of household)",
 										  "Other: non-relation member")
-	household_head_relationship = mongoengine.StringField(required=True, choices=household_head_relationship_tuples)
+	household_head_relationship = mongoengine.StringField(choices=household_head_relationship_tuples)
 
 	# Client Location
 	coc = mongoengine.ReferenceField(CoC)
