@@ -266,7 +266,7 @@ class Person(mongoengine.DynamicDocument):
 	destination_info = mongoengine.EmbeddedDocumentField(DestinationInfo)
 
 	# Personal ID - HIMS UDE Standard (3.13)
-	personal_id = mongoengine.UUIDField(primary_key=True)
+	personal_id = mongoengine.UUIDField()
 	legacy_id = mongoengine.IntField()
 
 
