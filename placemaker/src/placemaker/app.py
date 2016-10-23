@@ -3,7 +3,7 @@ from flask_api import FlaskAPI, status
 from flask import Flask
 app = Flask(__name__)
 from flask import request
-from  models import Coc, Organization, Person, User, Form, Question
+from  models import Coc, Organization, Person, User, Form, Question, Log
 import pytz
 import json
 import datetime
@@ -410,6 +410,56 @@ def delete_question(_id):
     except:
         return str(status.HTTP_400_BAD_REQUEST)
 
+#Logging
+@app.route('/api/log/read/<_id>', methods=['GET'])
+def read_log(_id):
+    '''
+    Get a question
+    '''
+    try:
+        log = Log.objects.get(pk=_id)
+        return log.to_json()
+    except:
+        return str(status.HTTP_400_BAD_REQUEST)
+
+@app.route('/api/log/all', methods=['GET'])
+def read_all_questions():
+    '''
+    get a list of questions
+    '''
+
+    try:
+        logs = Log.objects
+        return logs.to_json()
+    except:
+        return str(status.HTTP_400_BAD_REQUEST)
+
+
+@app.route('/api/log/update', methods=['POST'])
+def update_question(_id):
+    '''
+    Update a question
+    '''
+    try:
+        log = Log(**json.loads(request.form))
+        log.save(upsert=True)
+        return str(status.HTTP_202_ACCEPTED)
+    except:
+        return str(status.HTTP_400_BAD_REQUEST)
+
+
+@app.route('/api/log/delete/<_id>', methods=['GET'])
+def delete_question(_id):
+    '''
+    Delete a question
+    '''
+    try:
+        log = Log.objects.get(pk=_id)
+        log.delete()
+        return str(status.HTTP_202_ACCEPTED)
+    except:
+        return str(status.HTTP_400_BAD_REQUEST)
+    
 @app.route('/api/message/<msg>/<name>/<number>', methods=['GET'])
 def send_messages(msg, name, number):
     try:
