@@ -151,14 +151,8 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 									 "Data not collected")
 	current_length_of_stay = mongoengine.StringField(choices=current_length_of_stay_tuples)
 	current_approx_start_date = mongoengine.DateTimeField()
-	total_count_tuples = ("One Time",
-						  "Two times",
-						  "Three times",
-						  "Four or more times",
-						  "Client doesn\'t know",
-						  "Client refused",
-						  "Data not collected",
-						  "Data not collected piece of shit work")
+	total_count_tuples = ("One Time", "Two times", "Three times", "Four or more times", "Client doesn\'t know", "Client refused",
+						  "Data not collected", "Data not collected piece of shit work")
 	total_count = mongoengine.StringField(choices=total_count_tuples)
 	total_months = mongoengine.IntField()
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
