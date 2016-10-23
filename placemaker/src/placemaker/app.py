@@ -1,6 +1,7 @@
 __author__ = 'jermellbeane'
 from flask_api import FlaskAPI, status
-app = FlaskAPI(__name__)
+from flask import Flask
+app = Flask(__name__)
 from flask import request
 from  models import Coc, Organization, Person, User, Form, Question
 import pytz
@@ -409,19 +410,22 @@ def delete_question(_id):
     except:
         return status.HTTP_400_BAD_REQUEST
 
-@app.route('/api/message', methods=['POST'])
-def send_messages():
+@app.route('/api/message/<msg>/<name>/<number>', methods=['GET'])
+def send_messages(msg, name, number):
     try:
         m = TwilioNotificationsMiddleware()
-        for key, value in json.loads(request.form):
-            print("sending message to {}".format(key))
-            m.client.send_message("hi {}".format(key), value)
 
-        return status.HTTP_202_ACCEPTED
-    except:
-        return status.HTTP_400_BAD_REQUEST
+        # print("sending message to {}".format(key))
+        m.client.send_message("hi {0} {1}".format(name, msg), number)
+
+        return str(status.HTTP_202_ACCEPTED)
+    except Exception as e:
+        return str(e)
 
 if __name__ == '__main__':
     app.run()
+    # app2 = app.test_client()
+    # app2.post('/api/message', data={'jermell':'3142559197'})
+
     # question = Coc(rah_rah='1')
     # question.save()
