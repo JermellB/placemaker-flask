@@ -5,9 +5,66 @@ from datetime import datetime
 class Coc(mongoengine.DynamicDocument):
 	coc_id = mongoengine.UUIDField(primary_key=True)
 
+class Log(mongoengine.DynamicDocument):
+	first_name = mongoengine.StringField()
+	last_name = mongoengine.StringField()
+	ssn = mongoengine.StringField()
+	organization_name = mongoengine.StringField()
+	event_name = mongoengine.StringField()
+
+
+class ContactInfo(mongoengine.DynamicEmbeddedDocument):
+	contact_name = mongoengine.StringField()
+	number = mongoengine.StringField()
+	email = mongoengine.EmailField()
+	address = mongoengine.StringField()
+
+class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
+	gender_tuples = ("Male",
+					 "Female",
+					 "Transgender")
+	gender = mongoengine.StringField()
+
+	family_size = mongoengine.IntField()
+
+	veteran = mongoengine.BooleanField()
+
+	# TODO: eventually convert to list of specific referral organizations so we can fully realize our pipeline approach, keep as boolean right now
+	referral = mongoengine.BooleanField()
+
+	# populate hour_open and hour_close with agency service hours
+	hour_open = mongoengine.FloatField()
+	hour_close = mongoengine.FloatField()
+
+	# Specific address already under ContactInfo, simply use that for
+	# if latest person address is not in expected_county, don't allow them to go there
+	# if expected_county doesn't have a value, refer to the address under ContactInfo for Jermell's google maps api functionality
+	expected_county = mongoengine.StringField()
+
+	max_age = mongoengine.IntField()
+	min_age = mongoengine.IntField()
+
+	pregnancy = mongoengine.BooleanField()
+
 
 class Organization(mongoengine.DynamicDocument):
-	pass
+	organization_type_tuples = ("Emergency Shelters",
+				   "Transitional Housing",
+				   "Permanent Supportive Housing",
+				   "Youth Programs",
+				   "VA System",
+				   "Winter Only Shelters",
+				   "Independent Programs",
+				   "Rapid Rehousing",
+				   "Domestic Violence",
+				   "Non-Homeless System Services")
+	organization_type = mongoengine.StringField(choices=organization_type_tuples)
+	name = mongoengine.StringField()
+
+	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
+	capacity = mongoengine.IntField()
+	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
+	coc = mongoengine.ReferenceField(CoC)
 
 
 class Form(mongoengine.DynamicDocument):
@@ -159,7 +216,23 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Client refused",
 						  "Data not collected")
 	total_count = mongoengine.StringField(choices=total_count_tuples)
-	total_months = mongoengine.IntField()
+	total_month_tuples = ("1 month",
+						  "2 months",
+						  "3 months",
+						  "4 months",
+						  "5 months",
+						  "6 months",
+						  "7 months",
+						  "8 months",
+						  "9 months",
+						  "10 months",
+						  "11 months",
+						  "12 months",
+						  "12+ months",
+						  "Client doesn\'t know",
+						  "Client refused",
+						  "Data not collected")
+	total_months = mongoengine.StringField(choices=total_month_tuples)
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
 	prior_residence_subtype = mongoengine.StringField(choices=residence_subtype_tuples)
 	prior_approx_start_date = mongoengine.DateTimeField()
@@ -199,7 +272,8 @@ class DestinationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Other - please specify",
 						  "No exit interview completed",
 						  "Client doesn\'t know",
-						  "Client refused")
+						  "Client refused",
+						  "Data not collected")
 	destination = mongoengine.StringField(choices=destination_tuples)
 	# destination_specify field is used for further specification only if gender field is set to "Other - please specify"
 	destination_specify = mongoengine.StringField()
@@ -269,9 +343,8 @@ class Person(mongoengine.DynamicDocument):
 	personal_id = mongoengine.UUIDField()
 	legacy_id = mongoengine.IntField()
 
-
 	# Household ID - HIMS UDE Standard (3.14)
-	# Household isn't expressed in the Person schema, rather, Households are their own collection of embedded persons
+	household_id = mongoengine.IntField()
 
 	# relationship between person and the head of their household
 	household_head_relationship_tuples = ("Self (head of household)",
