@@ -76,7 +76,7 @@ class Organization(mongoengine.DynamicDocument):
 	# TODO: better capacity constraints that allocate amounts for specific types of persons, currently just two constraints for beds and families
 	bed_capacity = mongoengine.IntField()
 	family_capacity = mongoengine.IntField()
-	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
+	eligibility_info = mongoengine.EmbeddedDocumentField(EligibilityInfo)
 	coc = mongoengine.ReferenceField(Coc)
 
 
@@ -370,7 +370,7 @@ class Person(mongoengine.DynamicDocument):
 	household_head_relationship = mongoengine.StringField(choices=household_head_relationship_tuples)
 
 	# Client Location
-	coc_id = mongoengine.ReferenceField(Coc)
+	coc = mongoengine.ReferenceField(Coc)
 
 
 
