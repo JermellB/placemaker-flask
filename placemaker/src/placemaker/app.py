@@ -547,7 +547,7 @@ def read_log(_id):
         return str(status.HTTP_400_BAD_REQUEST)
 
 @app.route('/api/log/all', methods=['GET'])
-def read_all_questions():
+def read_all_logs():
     '''
     get a list of all logs
     '''
@@ -560,7 +560,7 @@ def read_all_questions():
 
 
 @app.route('/api/log/update', methods=['POST'])
-def update_question(_id):
+def update_log(_id):
     '''
     Update a log
     '''
@@ -584,7 +584,7 @@ def update_question(_id):
         return "Please use JSON or a FORM"
 
 @app.route('/api/log/delete/<_id>', methods=['GET'])
-def delete_question(_id):
+def delete_log(_id):
     '''
     Delete a log
     '''
