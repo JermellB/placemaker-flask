@@ -157,7 +157,7 @@ class LivingSituationInfo(mongoengine.DynamicEmbeddedDocument):
 						  "Four or more times",
 						  "Client doesn\'t know",
 						  "Client refused",
-						  "Data not collected")
+						  "Data not collected",)
 	total_count = mongoengine.StringField(choices=total_count_tuples)
 	total_months = mongoengine.IntField()
 	prior_residence_type = mongoengine.StringField(choices=residence_type_tuples)
