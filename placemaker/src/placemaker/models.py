@@ -18,6 +18,10 @@ class ContactInfo(mongoengine.DynamicEmbeddedDocument):
 	number = mongoengine.StringField()
 	email = mongoengine.EmailField()
 	address = mongoengine.StringField()
+	city = mongoengine.StringField()
+	state = mongoengine.StringField()
+	zipcode = mongoengine.IntField()
+
 
 class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
 	gender_tuples = ("Male",
@@ -39,7 +43,7 @@ class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
 	# Specific address already under ContactInfo, simply use that for
 	# if latest person address is not in expected_county, don't allow them to go there
 	# if expected_county doesn't have a value, refer to the address under ContactInfo for Jermell's google maps api functionality
-	expected_county = mongoengine.StringField()
+	eligible_county = mongoengine.StringField()
 
 	max_age = mongoengine.IntField()
 	min_age = mongoengine.IntField()
@@ -48,22 +52,22 @@ class EligibilityInfo(mongoengine.DynamicEmbeddedDocument):
 
 
 class Organization(mongoengine.DynamicDocument):
-	organization_type_tuples = ("Emergency Shelters",
+	organization_type_tuples = ("Emergency Shelter",
 				   "Transitional Housing",
 				   "Permanent Supportive Housing",
-				   "Youth Programs",
+				   "Youth Program",
 				   "VA System",
-				   "Winter Only Shelters",
-				   "Independent Programs",
+				   "Winter Only Shelter",
+				   "Independent Program",
 				   "Rapid Rehousing",
 				   "Domestic Violence",
-				   "Non-Homeless System Services")
+				   "Non-Homeless System Service")
 	organization_type = mongoengine.StringField(choices=organization_type_tuples)
 	name = mongoengine.StringField()
 
 	contact_info = mongoengine.EmbeddedDocumentField(ContactInfo)
+	eligibility_info = mongoengine.EmbeddedDocumentField(EligibilityInfo)
 	capacity = mongoengine.IntField()
-	eligibility = mongoengine.EmbeddedDocumentField(EligibilityInfo)
 	coc = mongoengine.ReferenceField(CoC)
 
 
